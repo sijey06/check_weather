@@ -35,16 +35,27 @@ class GetWeather(TemplateView):
 
         # Запрос гео-данных для выбранного города
         geo_api = f'https://geocode.maps.co/search?q={city}'
-        geo_response = requests.get(geo_api)
-        results = geo_response.json()
+        try:
+            geo_response = requests.get(geo_api)
+            geo_response.raise_for_status()
+            results = geo_response.json()
+        except requests.RequestException as err:
+            context.update(
+                {'error': f'Ошибка получения данных геолокации: {err}'}
+            )
+            return context
 
         if not results:
             context.update({'error': 'Город не найден'})
             return context
 
         # Извлечение широты и долготы для выбранного города
-        lat = float(results[0]['lat'])
-        lon = float(results[0]['lon'])
+        try:
+            lat = float(results[0]['lat'])
+            lon = float(results[0]['lon'])
+        except (KeyError, IndexError):
+            context['error'] = 'Некорректные данные геолокации'
+            return context
 
         # Запрос текущих погодных данных
         forecast_api = 'https://api.open-meteo.com/v1/forecast?'
@@ -54,8 +65,15 @@ class GetWeather(TemplateView):
             'current_weather': True,
             'hourly': 'temperature_2m,windspeed'
         }
-        weather_response = requests.get(forecast_api, params=forecast_params)
-        weather_data = weather_response.json().get('current_weather', {})
+        try:
+            weather_response = requests.get(
+                forecast_api, params=forecast_params
+            )
+            weather_response.raise_for_status()
+            weather_data = weather_response.json().get('current_weather', {})
+        except requests.RequestException as err:
+            context.update({'error': f'Ошибка получения данных погоды: {err}'})
+            return context
 
         context.update({
             'city': city,
