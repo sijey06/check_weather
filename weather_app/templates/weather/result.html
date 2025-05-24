@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}
+  Погода в городе {{ city }}
+{% endblock %}
+{% block content %}
+    <div class="container text-center p-5 rounded shadow bg-white w-50">
+        <h1 class="mb-4">Погода в городе {{ city }}</h1>
+        {% if error %}
+            <div class="alert alert-danger mt-3" role="alert">
+                Город не найден. Пожалуйста, попробуйте ещё раз.
+            </div>
+        {% else %}
+            <ul class="list-group list-group-numbered m-auto col-md-8">
+                <li class="list-group-item"><b>Температура воздуха:</b> {{ temperature }} °C</li>
+                <li class="list-group-item"><b>Скорость ветра:</b> {{ windspeed }} м/с</li>
+            </ul>
+        {% endif %}
+        <a href="{% url 'index' %}" class="btn btn-outline-primary mt-3">Вернуться назад</a>
+    </div>
+{% endblock %}

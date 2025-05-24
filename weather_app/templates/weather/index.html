@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}
+  Проверка погоды
+{% endblock %}
+{% block content %}
+    <div class="container text-center p-5 rounded shadow bg-white w-50">
+        <h1 class="mb-4">Проверка погоды</h1>
+        <form action="{% url 'get_weather' %}" method="GET" class="d-grid gap-3 mb-3">
+            <input type="search" id="city" name="city" placeholder="Введите название города..." class="form-control"/>
+            <button type="submit" class="btn btn-primary">Посмотреть погоду</button>
+        </form>
+    </div>
+{% endblock %}
