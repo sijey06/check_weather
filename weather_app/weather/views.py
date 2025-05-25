@@ -1,8 +1,8 @@
+import requests
 from django.views.generic.edit import FormView
 from django.views.generic.base import TemplateView
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-import requests
 
 from .forms import CitySearchForm
 
